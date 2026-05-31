@@ -1,5 +1,5 @@
 \NeedsTeXFormat{LaTeX2e}
-\ProvidesClass{chicv}[2022/08/21 A CV template based on the Curriculum Vitae of Alex Chi Zhang]
+\ProvidesClass{resume}[2022/08/21 A CV template based on the Curriculum Vitae of Alex Chi Zhang]
 \LoadClass[10pt]{article} % based on article class
 
 %
@@ -31,7 +31,21 @@
 
 % For hyperlink customization
 \RequirePackage[hidelinks]{hyperref}
-\RequirePackage{fontawesome5} % icons
+\IfFileExists{fontawesome5.sty}{
+    \RequirePackage{fontawesome5} % icons
+}{}
+\providecommand{\faEnvelope}{}
+\providecommand{\faPhone}{}
+\providecommand{\faLinkedinIn}{}
+\providecommand{\faLinkedin}{}
+\providecommand{\faGithub}{}
+\providecommand{\faGlobe}{}
+\providecommand{\faLink}{}
+\providecommand{\faGraduationCap}{}
+\providecommand{\faUsers}{}
+\providecommand{\faCogs}{}
+\providecommand{\faInfo}{}
+\providecommand{\faLocationArrow}{}
 
 % For list environment customizations
 \RequirePackage{enumitem}
@@ -39,6 +53,11 @@
 % For customizing underline
 \RequirePackage[normalem]{ulem}
 \RequirePackage{contour}
+
+\RequirePackage{hyperref}
+\RequirePackage{tabularx}
+\RequirePackage{calc}
+\RequirePackage{setspace}
 
 %% ----------------- END OF PACKAGES ----------------- %%
 
@@ -56,7 +75,7 @@
 }
 
 % Spacings
-\setlength{\footskip}{4pt}
+\setlength{\footskip}{12pt}
 \setlength{\parindent}{0pt}
 \setlength{\leftskip}{0pt}
 \setlist[itemize]{
@@ -78,29 +97,48 @@
 \IfFontExistsTF{Avenir Next LT Pro}{
     \newfontfamily{\headingfont}{Avenir Next LT Pro}
 }{
-    \IfFontExistsTF{Avenir Next}{
-        \newfontfamily{\headingfont}{Avenir Next}
-    }{
-        % use local font in ./fonts folder
-        \newfontfamily{\headingfont}{AvenirNextLTPro}[
-            Path = ./fonts/,
-            Extension = .otf,
-            UprightFont = *-Regular,
-            BoldFont = *-Bold,
-            ItalicFont = *-Italic,
-        ]
-    }
+    % use local font in ./fonts folder (system "Avenir Next" .ttc is
+    % reported by \IfFontExistsTF but fails to load via \newfontfamily)
+    \newfontfamily{\headingfont}{AvenirNextLTPro}[
+        Path = ./fonts/,
+        Extension = .otf,
+        UprightFont = *-Regular,
+        BoldFont = *-Bold,
+        ItalicFont = *-Italic,
+    ]
 }
+
+% heading font: Source Han Serif (local fonts)
+\newfontfamily{\hanfont}{SourceHanSerifCN-Regular}[
+    Path = ./fonts/,
+    Extension = .otf,
+    BoldFont = SourceHanSerifCN-Bold,
+    ItalicFont = SourceHanSerifCN-Regular,
+    BoldItalicFont = SourceHanSerifCN-Bold,
+]
 
 % add CJK fonts and use zh line break
 % usage: \useChinese{<normal font weight>}{<bold font weight>}
 \newcommand{\useChinese}[2]{
     \RequirePackage{xeCJK}
-    \setCJKmainfont{SourceHanSerifCN}[
+    \setCJKmainfont{SourceHanSerifCN-#1}[
         Path = ./fonts/,
         Extension = .otf,
-        UprightFont = *-#1,
-        BoldFont = *-#2,
+        BoldFont = SourceHanSerifCN-#2,
+        ItalicFont = SourceHanSerifCN-#1,
+        BoldItalicFont = SourceHanSerifCN-#2,
+    ]
+    % also define CJK sans/mono families to avoid xeCJK falling back
+    % to an undefined family (\CJKttdefault warning)
+    \setCJKsansfont{SourceHanSerifCN-#1}[
+        Path = ./fonts/,
+        Extension = .otf,
+        BoldFont = SourceHanSerifCN-#2,
+    ]
+    \setCJKmonofont{SourceHanSerifCN-#1}[
+        Path = ./fonts/,
+        Extension = .otf,
+        BoldFont = SourceHanSerifCN-#2,
     ]
     \XeTeXlinebreaklocale "zh"
     \XeTeXlinebreakskip = 0pt plus 1pt
@@ -143,17 +181,25 @@
 
 \NewDocumentCommand{\cventry}{ m m o o }
 {
-    \subsection[#1]{\textbf{#1} \hfill #2}
+    \subsection[#1]{\textbf{\Large#1} \hfill #2}
     \IfNoValueTF{#3}
     {}
     {\setlength{\parindent}{12pt}{\par #3 \hfill #4 \par}}
     \vspace{2pt}
 }
 
+% \NewDocumentCommand{\datedsubsection}{ m m }{
+%   \subsection{
+%     \noindent
+%     % 创建一个盒子，将右边的#2推到最右侧
+%     \makebox[0pt][l]{\hspace{\linewidth}\makebox[0pt][r]{#2}}%
+%     % 左边的内容允许自动换行
+%     #1
+%   }
+% }
 
 \NewDocumentCommand{\name}{ m }
 {{\headingfont\Huge#1}}
-
 
 \NewDocumentEnvironment{compactlist}{}
 {
@@ -203,6 +249,12 @@
 % usage: \phone{<phone>}
 \NewDocumentCommand{\phone}{ m }{
     \faPhone\ {#1}\hspace{-14pt}
+}
+
+% defines one's location
+% usage: \location{<location>}
+\NewDocumentCommand{\location}{ m }{
+    \faLocationArrow\ {#1}\hspace{-14pt}
 }
 
 % defines one's linkedin
