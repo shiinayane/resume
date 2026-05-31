@@ -16,18 +16,23 @@
 ## 编译
 
 本模板使用 XeLaTeX。因为用了 `hyperref` + 隐藏页码，需要跑两遍才能消除
-“Rerun to get PageLabels” 提示，推荐直接用 `latexmk` 自动处理：
+“Rerun to get PageLabels” 提示。仓库已自带 [`.latexmkrc`](.latexmkrc)（已配好
+XeLaTeX 引擎与默认源文件），直接一条命令即可：
 
 ```bash
-latexmk -xelatex resume.tex
+latexmk          # 构建 resume.tex -> resume.pdf，自动重跑到稳定
+latexmk -c       # 清理辅助文件，保留 PDF
 ```
 
-或手动编译两遍：
+也可以手动编译两遍：
 
 ```bash
 xelatex resume.tex
 xelatex resume.tex
 ```
+
+> 字体路径在 `resume.cls` 里以相对路径 `./fonts/` 解析，请在**项目根目录**下编译
+> （或覆盖 `\resumefontdir`）。
 
 ## 相比原模板做的改动
 
@@ -37,6 +42,11 @@ xelatex resume.tex
 - 完善中文支持：`\useChinese{<常规字重>}{<加粗字重>}` 一行开启思源宋体 + 中文断行，
   并补齐 CJK sans/mono 字体族，消除 xeCJK 警告
 - `fontawesome5` 等可选宏包改为存在性检测加载，缺失时不致编译中断
+- 显式加载 `fontspec`，字体目录抽成单一来源 `\resumefontdir`，五处引用统一管理
+- 精简无用宏包（`xparse` 已入内核、`tabularx`/`calc` 未使用、XeLaTeX 下多余的
+  `[T1]fontenc`），去掉重复的 `hyperref`
+- 修正 `\linkedinsquare` 可选参数判断错误的 bug
+- 新增 [`.latexmkrc`](.latexmkrc)，`latexmk` 一条命令完成构建
 
 ## 用法速览
 

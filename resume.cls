@@ -15,8 +15,13 @@
 \RequirePackage{fancyhdr}
 
 % For font setting
-\RequirePackage[T1]{fontenc}
+\RequirePackage{fontspec}        % explicit: font selection for XeLaTeX/LuaLaTeX
 \RequirePackage{titlesec}
+
+% Single source of truth for the bundled fonts directory.
+% Note: this path is resolved relative to the current working directory,
+% so compile from the project root (or override \resumefontdir).
+\newcommand{\resumefontdir}{./fonts/}
 
 % Require XCharter font
 \RequirePackage{XCharter}
@@ -26,8 +31,8 @@
 \RequirePackage{xcolor}
 
 % For smarter command definition
+% (xparse is part of the LaTeX kernel since 2020, no need to load it)
 \RequirePackage{xifthen}
-\RequirePackage{xparse}
 
 % For hyperlink customization
 \RequirePackage[hidelinks]{hyperref}
@@ -54,9 +59,6 @@
 \RequirePackage[normalem]{ulem}
 \RequirePackage{contour}
 
-\RequirePackage{hyperref}
-\RequirePackage{tabularx}
-\RequirePackage{calc}
 \RequirePackage{setspace}
 
 %% ----------------- END OF PACKAGES ----------------- %%
@@ -100,7 +102,7 @@
     % use local font in ./fonts folder (system "Avenir Next" .ttc is
     % reported by \IfFontExistsTF but fails to load via \newfontfamily)
     \newfontfamily{\headingfont}{AvenirNextLTPro}[
-        Path = ./fonts/,
+        Path = \resumefontdir,
         Extension = .otf,
         UprightFont = *-Regular,
         BoldFont = *-Bold,
@@ -110,7 +112,7 @@
 
 % heading font: Source Han Serif (local fonts)
 \newfontfamily{\hanfont}{SourceHanSerifCN-Regular}[
-    Path = ./fonts/,
+    Path = \resumefontdir,
     Extension = .otf,
     BoldFont = SourceHanSerifCN-Bold,
     ItalicFont = SourceHanSerifCN-Regular,
@@ -122,7 +124,7 @@
 \newcommand{\useChinese}[2]{
     \RequirePackage{xeCJK}
     \setCJKmainfont{SourceHanSerifCN-#1}[
-        Path = ./fonts/,
+        Path = \resumefontdir,
         Extension = .otf,
         BoldFont = SourceHanSerifCN-#2,
         ItalicFont = SourceHanSerifCN-#1,
@@ -131,12 +133,12 @@
     % also define CJK sans/mono families to avoid xeCJK falling back
     % to an undefined family (\CJKttdefault warning)
     \setCJKsansfont{SourceHanSerifCN-#1}[
-        Path = ./fonts/,
+        Path = \resumefontdir,
         Extension = .otf,
         BoldFont = SourceHanSerifCN-#2,
     ]
     \setCJKmonofont{SourceHanSerifCN-#1}[
-        Path = ./fonts/,
+        Path = \resumefontdir,
         Extension = .otf,
         BoldFont = SourceHanSerifCN-#2,
     ]
@@ -269,7 +271,7 @@
 }
 
 \NewDocumentCommand{\linkedinsquare}{ m o }{
-    \faLinkedin\IfNoValueTF{#1}{
+    \faLinkedin\IfNoValueTF{#2}{
         \underline{\href{#1}{#1}}
     }{
         \underline{\href{#2}{#1}}
