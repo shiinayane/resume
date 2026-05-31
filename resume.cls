@@ -232,31 +232,33 @@
 {%
 }
 
-\NewDocumentCommand{\info}{ m }{
-    \stepcounter{infonum}
-    \ifthenelse{\theinfonum = 1}{
-        #1
-    }{
-        $\mid$ #1
-    }
+% separator inserted between consecutive \info items.
+% This is the SINGLE knob controlling the basic-info line spacing;
+% the contact commands below no longer carry per-command \hspace fudge.
+\newcommand{\infosep}{\hspace{0.5em}$\mid$\hspace{0.5em}}
+
+\NewDocumentCommand{\info}{ m }{%
+    \stepcounter{infonum}%
+    \ifthenelse{\theinfonum = 1}{}{\infosep}%
+    #1%
 }
 
 % defines one's email
 % usage: \email{<email>}
 \NewDocumentCommand{\email}{ m }{
-    \faEnvelope\ \underline{\href{mailto:#1}{#1}}\hspace{-14pt}
+    \faEnvelope\ \underline{\href{mailto:#1}{#1}}%
 }
 
 % defines one's phone
 % usage: \phone{<phone>}
 \NewDocumentCommand{\phone}{ m }{
-    \faPhone\ {#1}\hspace{-14pt}
+    \faPhone\ {#1}%
 }
 
 % defines one's location
 % usage: \location{<location>}
 \NewDocumentCommand{\location}{ m }{
-    \faLocationArrow\ {#1}\hspace{-14pt}
+    \faLocationArrow\ {#1}%
 }
 
 % defines one's linkedin
@@ -266,8 +268,7 @@
         \underline{\href{#1}{#1}}
     }{
         \underline{\href{#2}{#1}}
-    }
-    \hspace{-20pt}
+    }%
 }
 
 \NewDocumentCommand{\linkedinsquare}{ m o }{
@@ -275,8 +276,7 @@
         \underline{\href{#1}{#1}}
     }{
         \underline{\href{#2}{#1}}
-    }
-    \hspace{-20pt}
+    }%
 }
 
 % defines one's GitHub
@@ -286,8 +286,7 @@
         \underline{\href{#1}{#1}}
     }{
         \underline{\href{#2}{#1}}
-    }
-    \hspace{-20pt}
+    }%
 }
 
 % defines one's homepage
@@ -297,8 +296,7 @@
         \underline{\href{#1}{#1}}
     }{
         \underline{\href{#2}{#1}}
-    }
-    \hspace{-20pt}
+    }%
 }
 
 % Customize icon link
